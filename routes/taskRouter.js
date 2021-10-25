@@ -1,10 +1,22 @@
 const express = require("express");
-const taskController = require("../controllers/taskController");
-const taskRouter = express.Router();
+const TaskController = require("../controllers/taskController");
 
-taskRouter.post("/create", taskController.addTask);
-taskRouter.get("/", taskController.getTasks);
-taskRouter.put("/update/:id", taskController.updTasks);
-taskRouter.delete("/delete/:id", taskController.delTasks);
+module.exports = class TaskRouter {
+  constructor(app) {
+    this.app = app;
+    this.configureRoutes();
+  }
 
-module.exports = taskRouter;
+  configureRoutes() {
+    this.app
+      .route(`/tasks`)
+      .get(TaskController.getTasks)
+      .post(TaskController.addTask);
+    this.app
+      .route(`/tasks/:id`)
+      .put(TaskController.updTasks)
+      .delete(TaskController.delTasks);
+
+    return this.app;
+  }
+};
